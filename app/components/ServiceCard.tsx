@@ -103,7 +103,7 @@ export default function ServiceCard({
       </div>
 
       <div className="p-6 md:p-7">
-        <div className="flex gap-2.5 flex-nowrap overflow-x-auto">
+        <div className="flex flex-wrap md:flex-nowrap gap-2.5">
           {facts.map((fact) => (
             <span
               key={fact}

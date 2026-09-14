@@ -54,11 +54,14 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${lora.variable} ${inter.variable} h-full antialiased`} suppressHydrationWarning>
       <head>
-        {/* Applies the stored (or system) theme before first paint, so the
-            page never flashes the wrong background. */}
+        {/* Applies the stored theme before first paint, so the page never
+            flashes the wrong background. Always defaults to light on a
+            first visit — deliberately ignoring `prefers-color-scheme` — so
+            the brand's actual palette is what new visitors see regardless
+            of their OS setting; dark mode is opt-in via the nav toggle. */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `try{var t=localStorage.getItem('theme');if(t!=='dark'&&t!=='light'){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}document.documentElement.dataset.theme=t}catch(e){document.documentElement.dataset.theme='light'}`,
+            __html: `try{var t=localStorage.getItem('theme');document.documentElement.dataset.theme=(t==='dark')?'dark':'light'}catch(e){document.documentElement.dataset.theme='light'}`,
           }}
         />
         {/* Chrome (and others) restore the last scroll offset on reload by

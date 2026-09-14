@@ -6,6 +6,7 @@ import PhysicianCard from "./components/PhysicianCard";
 import ServiceCard from "./components/ServiceCard";
 import Reveal from "./components/Reveal";
 import PracticeCarousel from "./components/PracticeCarousel";
+import ParallaxImage from "./components/ParallaxImage";
 import { THERAPIES, PHYSICIANS } from "./lib/content";
 import FaqSection from "./components/FaqSection";
 import { FAQS } from "./lib/faqs";
@@ -64,7 +65,7 @@ export default function HomePage() {
         {/* This section deliberately doesn't use `container-wide` (1180px,
             shared by every other section) — it has its own wider cap so
             widening the hero doesn't widen the whole site. */}
-        <div className="mx-auto max-w-[1440px] px-5 md:px-10 relative z-10 pt-32 md:pt-40 pb-20 md:pb-2 grid lg:grid-cols-[1.15fr_0.85fr] gap-14 lg:gap-64 items-center lg:justify-center">
+        <div className="mx-auto max-w-[1440px] px-5 md:px-10 relative z-10 pt-28 md:pt-36 pb-3 md:pb-2 grid lg:grid-cols-[1.15fr_0.85fr] gap-6 sm:gap-9 lg:gap-10 xl:gap-[14.4rem] items-center lg:justify-center">
           {/* `min-w-0`: grid items default to `min-width: auto`, which
               refuses to shrink below the column's content size — without
               this, any wide child (even one that's visually scaled down)
@@ -73,19 +74,19 @@ export default function HomePage() {
             {/* Two lines exactly: "A new option, from a team" / "you already
                 trust." — `lg:whitespace-nowrap` plus the reduced clamp max
                 keep each phrase from wrapping again at this column width. */}
-            <h1 className="mt-7 font-display font-semibold tracking-[-0.02em] leading-[1.15] text-[clamp(2rem,3.6vw,3.15rem)] text-heading lg:whitespace-nowrap">
+            <h1 className="mt-6 font-display font-semibold tracking-[-0.02em] leading-[1.15] text-[clamp(1.8rem,3.2vw,2.85rem)] text-heading lg:whitespace-nowrap">
               A new option, from a team
               <br />
               <span className="text-sage">you already trust.</span>
             </h1>
 
-            <p className="mt-6 text-lg text-ink/65 max-w-[46ch] leading-relaxed">
+            <p className="mt-5 text-base text-ink/65 max-w-[46ch] leading-relaxed">
               We&apos;re bringing exosome and placental matrix therapy into the
               care we&apos;ve always provided — no hype, no pressure, just an
               honest conversation about whether it&apos;s right for you.
             </p>
 
-            <div className="mt-9 flex flex-wrap gap-3.5">
+            <div className="mt-8 flex flex-wrap gap-3.5">
               <Link href="/contact" className="btn-primary">
                 Request a Consultation
               </Link>
@@ -100,7 +101,7 @@ export default function HomePage() {
       </section>
 
       <section className="bg-canvas">
-        <div className="container-wide pt-14 md:pt-16 pb-6 md:pb-8 max-w-7xl text-center">
+        <div className="container-wide pt-8 md:pt-16 pb-6 md:pb-8 max-w-7xl text-center">
           <TextReveal
             className="text-xl md:text-2xl text-heading/80 leading-[1.6] font-display"
             text="For years, patients have trusted us with their orthopedic and pain care. Regenerative medicine is simply the next tool in that same relationship — something we looked into carefully before ever offering it, and something we'll only recommend if it actually makes sense for you."
@@ -114,15 +115,9 @@ export default function HomePage() {
           scrollIntoView (HashScrollFix) and native anchor jumps both land
           below it instead of underneath it. */}
       <section id="our-approach" className="relative overflow-hidden scroll-mt-28">
-        <div
-          aria-hidden
-          className="absolute inset-0"
-          style={{
-            backgroundImage:
-              "url('/our-approach-bg.jpg'), linear-gradient(115deg, #6b421c 0%, #b87a2e 26%, #f2c579 50%, #d99a44 72%, #5d3c1c 100%)",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
+        <ParallaxImage
+          src="/our-approach-bg.jpg"
+          fallbackGradient="linear-gradient(115deg, #6b421c 0%, #b87a2e 26%, #f2c579 50%, #d99a44 72%, #5d3c1c 100%)"
         />
         <div
           aria-hidden

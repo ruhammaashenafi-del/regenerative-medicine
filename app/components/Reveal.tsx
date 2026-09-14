@@ -17,6 +17,7 @@ export default function Reveal({
   delay = 0,
   y = 22,
   scale = 1,
+  blur = 8,
   className,
 }: {
   children: ReactNode;
@@ -26,6 +27,11 @@ export default function Reveal({
      cards/tiles; leave at the default 1 (no scale motion) for plain text
      blocks, where it reads as unwanted jitter rather than emphasis. */
   scale?: number;
+  /* Starting blur (px) before it settles in focus — the bit that makes the
+     reveal feel expensive rather than just a fade. Set to 0 for anything
+     containing small text, where a blurred-in transition briefly renders
+     illegibly and reads as a glitch rather than polish. */
+  blur?: number;
   className?: string;
 }) {
   const reduced = useReducedMotion();
@@ -37,10 +43,10 @@ export default function Reveal({
   return (
     <motion.div
       className={className}
-      initial={{ opacity: 0, y, scale }}
-      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      initial={{ opacity: 0, y, scale, filter: `blur(${blur}px)` }}
+      whileInView={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
       viewport={{ once: true, margin: "-12% 0px" }}
-      transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] }}
     >
       {children}
     </motion.div>

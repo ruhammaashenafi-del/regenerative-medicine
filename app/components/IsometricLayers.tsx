@@ -15,15 +15,36 @@
  * pushed the hero wider than the viewport (grid items don't shrink below
  * their content's natural size unless something overrides `min-width`).
  * The outer wrapper below carries the *real*, responsive layout size
- * (matching each breakpoint's scale factor exactly: 440 × 0.55 ≈ 242,
- * 440 × 0.75 = 330), with `origin-top-left` so the scaled-down content's
- * corner lines up with that box's corner. No `overflow-hidden` here: the
- * rotated/masked geometry's visible pixels reach slightly above and past
- * the nominal 440×440 box (that's inherent to the rotateX/rotateZ
- * projection), and clipping to the box cut the top tile's peak clean off.
- * The box-width fix above is what actually stopped the mobile page-scroll
- * bug — clipping was only ever a "just in case" that turned out to cost
- * more than it protected against.
+ * (matching each breakpoint's scale factor exactly). That fixed the *grid
+ * track* sizing, but not a second, subtler version of the same bug:
+ * `scale()` only affects paint, so the un-scaled 440×440 box still counted
+ * toward the page's actual scrollable area whenever nothing clipped it —
+ * at narrow widths that alone pushed the whole document ~448px wide no
+ * matter how small the visible graphic was. Fixed by clipping at the outer
+ * wrapper (`relative overflow-hidden`), with the scaled content made
+ * `absolute` inside it.
+ *
+ * The clip box is *taller* than the visible graphic (width still matches
+ * the visual size exactly, for the grid-track reasoning above; only height
+ * grows), with the content kept centered inside it: the three floating
+ * `.iso-particle` spans sit well above `.iso-layer-top`'s own plane (they
+ * carry their own `translateZ` on top of its 240px, projected through the
+ * scene's rotateX/rotateZ), so a box sized to the diamond alone clips them
+ * clean off — measured (empirically, via getBoundingClientRect — the 3D
+ * projection isn't worth doing by hand) at up to ~65px of bleed above the
+ * diamond at the largest (xl) size. The extra height is well past that
+ * measurement on purpose: it costs nothing (this row has vertical room to
+ * spare) and a generous margin is one less thing to re-measure if the
+ * geometry above ever changes. Horizontally nothing bleeds past the
+ * diamond's own footprint, so the width needs no equivalent margin.
+ *
+ * The jump to the largest size waits for `xl` (1280px) rather than `lg`
+ * (1024px): the hero's own column gap is quite wide at desktop sizes, and
+ * at the narrow end of the `lg` range (1024–1279px) there isn't enough
+ * room left in this column for the full-size graphic — it was overflowing
+ * its grid column and getting cut off against the right edge. Holding at
+ * the `sm` size through `lg` and only growing at `xl` keeps it inside its
+ * column at every width in between.
  */
 export default function IsometricLayers() {
   return (
