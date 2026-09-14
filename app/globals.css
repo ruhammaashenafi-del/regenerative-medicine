@@ -1,15 +1,47 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
 :root {
-  --deep-teal: #1f3d36; /* primary — headers, nav, footer */
-  --sage: #6b8f73; /* secondary — accents, icons */
-  --clay: #c1694f; /* accent — CTAs, highlights only */
-  --ivory: #f8f1e4; /* background — main page fill */
-  --ivory-soft: #fbf7ef;
-  --ink: #241f1a; /* body text */
-  --line: rgba(36, 31, 26, 0.12);
-  --sage-tint: #e9efe9;
-  --clay-tint: #f6e6de;
+  color-scheme: light;
+
+  /* Brand constants — identical in both themes */
+  --deep-teal: #1f3d36;
+  --sage: #6b8f73;
+  --clay: #c1694f;
+  --ivory: #f8f1e4;
+
+  /* Themed surfaces */
+  --canvas: #f6f2ef;
+  --card: #ffffff;
+  --muted: #efe8e1;
+  --ink: #241f1a;
+  --heading: #1f3d36;
+  --line: rgba(36, 31, 26, 0.1);
+  --sage-tint: #eaf0ea;
+  --clay-tint: #f8e9e2;
+  --grid-line: rgba(36, 31, 26, 0.09);
+  /* A 5px node sits on every grid intersection: canvas-filled, 1px border a
+     shade darker than the rule, 1px corner radius, faint drop shadow. The
+     border is what stops it reading as a flat gap. Colors are baked into the
+     data URI (it can't read custom properties), so keep the fill in sync with
+     --canvas by hand. */
+  --grid-node: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='112'%20height='112'%3E%3Cdefs%3E%3Cfilter%20id='s'%20x='-50%25'%20y='-50%25'%20width='200%25'%20height='200%25'%3E%3CfeDropShadow%20dx='0'%20dy='1'%20stdDeviation='0.6'%20flood-opacity='0.07'/%3E%3C/filter%3E%3C/defs%3E%3Crect%20x='1'%20y='1'%20width='5'%20height='5'%20rx='1'%20fill='%23f6f2ef'%20stroke='%23d8d2c8'%20stroke-width='1'%20filter='url(%23s)'/%3E%3C/svg%3E");
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --canvas: #0e1c18;
+  --card: #16302a;
+  --muted: #132621;
+  --ink: #eef1ea;
+  --heading: #edf2ec;
+  --line: rgba(238, 241, 234, 0.14);
+  --sage-tint: #1b332b;
+  --clay-tint: #38201a;
+  --grid-line: rgba(238, 241, 234, 0.09);
+  --grid-node: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='112'%20height='112'%3E%3Crect%20x='1'%20y='1'%20width='5'%20height='5'%20rx='1'%20fill='%230e1c18'%20stroke='%23324a43'%20stroke-width='1'/%3E%3C/svg%3E");
 }
 
 @theme inline {
@@ -17,8 +49,11 @@
   --color-sage: var(--sage);
   --color-clay: var(--clay);
   --color-ivory: var(--ivory);
-  --color-ivory-soft: var(--ivory-soft);
+  --color-canvas: var(--canvas);
+  --color-card: var(--card);
+  --color-muted: var(--muted);
   --color-ink: var(--ink);
+  --color-heading: var(--heading);
   --color-line: var(--line);
   --color-sage-tint: var(--sage-tint);
   --color-clay-tint: var(--clay-tint);
@@ -27,8 +62,8 @@
 }
 
 html {
-  background: var(--ivory);
-  scroll-padding-top: 5.5rem;
+  background: var(--canvas);
+  scroll-padding-top: 6rem;
 }
 @media (prefers-reduced-motion: no-preference) {
   html {
@@ -37,7 +72,7 @@ html {
 }
 
 body {
-  background: var(--ivory);
+  background: var(--canvas);
   color: var(--ink);
   font-family: var(--font-inter), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -50,100 +85,397 @@ body {
   border-radius: 2px;
 }
 
-.skip-link {
-  position: absolute;
-  left: -9999px;
-  top: auto;
-  z-index: 100;
-  background: var(--deep-teal);
-  color: var(--ivory);
-  padding: 0.75rem 1.25rem;
-  border-radius: 0.5rem;
-}
-.skip-link:focus {
-  left: 1rem;
-  top: 1rem;
-}
-
-.container-wide {
-  max-width: 1180px;
-  margin-inline: auto;
-  padding-inline: 1.25rem;
-}
-@media (min-width: 768px) {
-  .container-wide {
-    padding-inline: 2rem;
+/* Component classes live in the components layer so Tailwind utilities
+   (and variants like peer-checked:, which compile with zero-specificity
+   :where(), and would otherwise tie and lose on source order) win. */
+@layer components {
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+    top: auto;
+    z-index: 100;
+    background: var(--deep-teal);
+    color: var(--ivory);
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.5rem;
   }
-}
+  .skip-link:focus {
+    left: 1rem;
+    top: 1rem;
+  }
 
-.eyebrow {
-  font-family: var(--font-inter), system-ui, sans-serif;
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--clay);
-}
+  .container-wide {
+    max-width: 1180px;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 768px) {
+    .container-wide {
+      padding-inline: 2rem;
+    }
+  }
 
-.btn-primary {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: var(--clay);
-  color: var(--ivory);
-  font-family: var(--font-inter), system-ui, sans-serif;
-  font-weight: 600;
-  font-size: 0.9rem;
-  padding: 0.85rem 1.6rem;
-  border-radius: 999px;
-  transition: transform 0.2s ease, background 0.2s ease;
-}
-.btn-primary:hover {
-  background: #ab5a41;
-  transform: translateY(-1px);
-}
+  .eyebrow {
+    font-family: var(--font-inter), system-ui, sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--clay);
+  }
 
-.btn-secondary {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: transparent;
-  color: var(--ivory);
-  border: 1px solid rgba(248, 241, 228, 0.4);
-  font-family: var(--font-inter), system-ui, sans-serif;
-  font-weight: 600;
-  font-size: 0.9rem;
-  padding: 0.85rem 1.6rem;
-  border-radius: 999px;
-  transition: border-color 0.2s ease, background 0.2s ease;
-}
-.btn-secondary:hover {
-  background: rgba(248, 241, 228, 0.08);
-  border-color: rgba(248, 241, 228, 0.7);
-}
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--clay);
+    color: #fff;
+    font-family: var(--font-inter), system-ui, sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 0.85rem 1.6rem;
+    border-radius: 999px;
+    transition: transform 0.2s ease, background 0.2s ease;
+  }
+  .btn-primary:hover {
+    background: #ab5a41;
+    transform: translateY(-1px);
+  }
 
-.field-label {
-  display: block;
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--ink);
-  margin-bottom: 0.4rem;
-}
-.field-input,
-.field-select,
-.field-textarea {
-  width: 100%;
-  border: 1px solid var(--line);
-  border-radius: 0.65rem;
-  padding: 0.7rem 0.9rem;
-  font-size: 0.95rem;
-  color: var(--ink);
-  background: var(--ivory-soft);
-}
-.field-input:focus,
-.field-select:focus,
-.field-textarea:focus {
-  outline: none;
-  border-color: var(--clay);
-  box-shadow: 0 0 0 3px var(--clay-tint);
+  /* Neutral companion button, for light surfaces */
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--line);
+    font-family: var(--font-inter), system-ui, sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 0.85rem 1.6rem;
+    border-radius: 999px;
+    transition: border-color 0.2s ease, background 0.2s ease;
+  }
+  .btn-secondary:hover {
+    background: var(--muted);
+    border-color: rgba(36, 31, 26, 0.28);
+  }
+  [data-theme="dark"] .btn-secondary:hover {
+    border-color: rgba(238, 241, 234, 0.35);
+  }
+
+  /* Same button sitting on an always-dark panel */
+  .btn-on-dark {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: transparent;
+    color: var(--ivory);
+    border: 1px solid rgba(248, 241, 228, 0.4);
+    font-family: var(--font-inter), system-ui, sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 0.85rem 1.6rem;
+    border-radius: 999px;
+    transition: border-color 0.2s ease, background 0.2s ease;
+  }
+  .btn-on-dark:hover {
+    background: rgba(248, 241, 228, 0.08);
+    border-color: rgba(248, 241, 228, 0.7);
+  }
+
+  .field-label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 0.4rem;
+  }
+  .field-input,
+  .field-select,
+  .field-textarea {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 0.65rem;
+    padding: 0.7rem 0.9rem;
+    font-size: 0.95rem;
+    color: var(--ink);
+    background: var(--muted);
+  }
+  .field-input:focus,
+  .field-select:focus,
+  .field-textarea:focus {
+    outline: none;
+    border-color: var(--clay);
+    box-shadow: 0 0 0 3px var(--clay-tint);
+  }
+
+  /* Faint ruled grid used as a page-wide texture. Masked so the lines fade
+     out toward the edges instead of stopping at a hard rectangle. */
+  .bg-grid {
+    /* Nodes are listed first so they paint over the rules. The -3.5px offset is
+       half the node's 7px outer box, which centres it on each crossing. */
+    background-image:
+      var(--grid-node),
+      linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+    background-size: var(--grid-size, 112px) var(--grid-size, 112px);
+    background-position: -3.5px -3.5px, 0 0, 0 0;
+    -webkit-mask-image: radial-gradient(
+      ellipse 85% 75% at 50% 35%,
+      #000 35%,
+      transparent 100%
+    );
+    mask-image: radial-gradient(
+      ellipse 85% 75% at 50% 35%,
+      #000 35%,
+      transparent 100%
+    );
+  }
+  .caption-serif {
+    font-family: var(--font-lora), Georgia, serif;
+    font-style: italic;
+  }
+
+  /* Sparse diagonal crossing lines for the footer band — always on the same
+     deep-teal surface regardless of site theme, so the tint is a constant
+     rather than a token. Large spacing keeps it a whisper, not a pattern. */
+  .footer-lines {
+    background-image:
+      repeating-linear-gradient(
+        58deg,
+        transparent 0,
+        transparent 210px,
+        rgba(248, 241, 228, 0.07) 210px,
+        rgba(248, 241, 228, 0.07) 211px
+      ),
+      repeating-linear-gradient(
+        -58deg,
+        transparent 0,
+        transparent 210px,
+        rgba(248, 241, 228, 0.07) 210px,
+        rgba(248, 241, 228, 0.07) 211px
+      );
+  }
+
+  /* Isometric stacked layers (hero graphic). Real 3D, not a flat clip-path
+     diamond: `.iso-scene` rotates a plane into axonometric view and each
+     `.iso-layer` sits on it at a different `translateZ`. No `perspective`
+     is set anywhere in the chain — that's deliberate, it keeps the
+     projection orthographic (flat isometric) rather than adding a vanishing
+     point, which is what makes it read as a diagram and not a 3D render. */
+  .iso-scene {
+    transform: rotateX(60deg) rotateZ(45deg);
+    transform-style: preserve-3d;
+  }
+
+  /* `transform-style: preserve-3d` here too, not just on `.iso-scene`: a
+     nested 3D transform only composes in real 3D space if *every* ancestor
+     in the chain opts in. Without this, the particles inside `.iso-layer-top`
+     — which have their own `translateZ` — flatten onto their parent's plane
+     instead of floating above it. That was the actual animation bug in the
+     reference: the float keyframes ran, but with nothing visible to show
+     for it because the depth axis was already collapsed. */
+  .iso-layer {
+    position: absolute;
+    inset: 0;
+    border: 1.5px solid rgba(255, 255, 255, 0.35);
+    transform-style: preserve-3d;
+    -webkit-mask-image: linear-gradient(to top left, #000 25%, transparent 95%);
+    mask-image: linear-gradient(to top left, #000 25%, transparent 95%);
+  }
+
+  .iso-layer-bottom {
+    background-color: var(--deep-teal);
+    background-image:
+      linear-gradient(rgba(248, 241, 228, 0.14) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(248, 241, 228, 0.14) 1px, transparent 1px),
+      radial-gradient(circle at 30% 70%, rgba(107, 143, 115, 0.5) 0%, transparent 50%),
+      radial-gradient(circle at 70% 30%, rgba(10, 20, 18, 0.55) 0%, transparent 60%);
+    background-size: 20px 20px, 20px 20px, 100% 100%, 100% 100%;
+    box-shadow: -15px 15px 35px rgba(20, 14, 8, 0.22);
+    -webkit-mask-image: linear-gradient(to top left, #000 50%, rgba(0, 0, 0, 0.3) 100%);
+    mask-image: linear-gradient(to top left, #000 50%, rgba(0, 0, 0, 0.3) 100%);
+    /* Static fallback for the animation below — without this, a
+       prefers-reduced-motion visitor (who gets no keyframes at all) would
+       have every layer sitting at transform:none, collapsed to zero depth. */
+    transform: translateZ(0px);
+  }
+
+  .iso-layer-middle {
+    background-color: var(--clay);
+    background-image:
+      linear-gradient(45deg, rgba(0, 0, 0, 0.1) 25%, transparent 25%, transparent 75%, rgba(0, 0, 0, 0.1) 75%),
+      linear-gradient(45deg, rgba(0, 0, 0, 0.1) 25%, transparent 25%, transparent 75%, rgba(0, 0, 0, 0.1) 75%);
+    background-size: 30px 30px;
+    background-position: 0 0, 15px 15px;
+    box-shadow: -15px 15px 35px rgba(20, 14, 8, 0.18);
+    transform: translateZ(120px);
+  }
+
+  .iso-layer-top {
+    background-color: var(--ivory);
+    background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='40'%20height='40'%3E%3Cpolygon%20points='0,0%2020,40%2040,0'%20fill='rgba(107,143,115,0.22)'/%3E%3Cpolygon%20points='20,40%2040,0%2060,40'%20fill='rgba(36,31,26,0.05)'/%3E%3Cpolygon%20points='0,40%2020,0%20-20,0'%20fill='rgba(255,255,255,0.55)'/%3E%3C/svg%3E");
+    background-size: 40px 40px;
+    box-shadow: -15px 15px 35px rgba(20, 14, 8, 0.15);
+    transform: translateZ(240px);
+  }
+
+  /* The float itself, gated behind the same motion preference as the rest
+     of the site. Each animation's own 0%/100% keyframe values match the
+     layer's static `transform` above, so switching the animation on or off
+     never jumps the layer to a different resting depth.
+
+     Each layer also gets a one-shot "stack-in" entrance, staggered so the
+     bottom tile lands first and the top tile last — reads as the stack
+     assembling itself, not three things fading in at once. It's a second,
+     separate `animation` in the same comma-separated declaration rather
+     than a second element wrapping this one: the entrance only ever
+     touches `opacity` and the standalone `scale` property, never
+     `transform` (which is what the float animation owns) — two CSS
+     animations fight over a property if they both set it, but compose
+     cleanly if each owns a different one, so no wrapper element or
+     preserve-3d bookkeeping is needed for it to combine correctly with the
+     float. */
+  @media (prefers-reduced-motion: no-preference) {
+    .iso-layer-bottom {
+      animation:
+        iso-float-bottom 6s ease-in-out infinite alternate,
+        iso-stack-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    .iso-layer-middle {
+      animation:
+        iso-float-middle 6s ease-in-out infinite alternate 0.3s,
+        iso-stack-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
+    }
+    .iso-layer-top {
+      animation:
+        iso-float-top 6s ease-in-out infinite alternate 0.6s,
+        iso-stack-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both;
+    }
+  }
+
+  @keyframes iso-stack-in {
+    0% {
+      opacity: 0;
+      scale: 0.82;
+    }
+    100% {
+      opacity: 1;
+      scale: 1;
+    }
+  }
+
+  .iso-particle {
+    position: absolute;
+    background-color: rgba(248, 241, 228, 0.95);
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+    box-shadow: -5px 10px 15px rgba(20, 14, 8, 0.12);
+  }
+
+  @keyframes iso-float-bottom {
+    0% { transform: translateZ(-5px); }
+    100% { transform: translateZ(5px); }
+  }
+  @keyframes iso-float-middle {
+    0% { transform: translateZ(115px); }
+    100% { transform: translateZ(125px); }
+  }
+  @keyframes iso-float-top {
+    0% { transform: translateZ(235px); }
+    100% { transform: translateZ(245px); }
+  }
+
+  /* Horizontal scrollers that are driven by their own controls, so the native
+     bar would just be visual noise. Keyboard and touch scrolling still work. */
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Underline-style fields — no boxes, just a rule that lights up on focus. */
+  .field-underline {
+    width: 100%;
+    background: transparent;
+    border: 0;
+    /* Deliberately stronger than --line: a hairline at 10% disappears on a
+       white card, leaving fields that don't read as fields. */
+    border-bottom: 1px solid color-mix(in srgb, var(--ink) 24%, transparent);
+    border-radius: 0;
+    padding: 0.6rem 0 0.65rem;
+    font-size: 0.95rem;
+    color: var(--ink);
+  }
+  .field-underline::placeholder {
+    color: color-mix(in srgb, var(--ink) 38%, transparent);
+  }
+  .field-underline:focus {
+    outline: none;
+    border-bottom-color: var(--clay);
+    box-shadow: 0 1px 0 0 var(--clay);
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--muted);
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--ink);
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  }
+  .chip:hover {
+    border-color: color-mix(in srgb, var(--ink) 25%, transparent);
+  }
+
+  /* Colour bleeding out of the panel's lower-left corner — dark mode only.
+     In light mode the same sage tint read as a smudge on white rather than a
+     glow, so the card stays a flat, plain surface there. */
+  [data-theme="dark"] {
+    --glow-core: rgba(107, 143, 115, 0.62);
+    --glow-edge: rgba(107, 143, 115, 0.2);
+  }
+
+  .glow-panel {
+    /* `background-color` was missing entirely — with no background-image in
+       light mode either, the card had no fill at all, letting the page's
+       grid pattern show straight through it. */
+    background-color: var(--card);
+    background-image: none;
+  }
+  [data-theme="dark"] .glow-panel {
+    /* The panel carries a faint tint toward the glow, so the bloom reads as
+       light passing through the card rather than a blob floating on top. */
+    background-image: linear-gradient(
+      145deg,
+      color-mix(in srgb, var(--sage) 7%, var(--card)) 0%,
+      var(--card) 42%,
+      var(--card) 100%
+    );
+  }
+
+  [data-theme="dark"] .card-glow::before {
+    content: "";
+    position: absolute;
+    bottom: -170px;
+    left: -150px;
+    width: 640px;
+    height: 540px;
+    border-radius: 9999px;
+    background: radial-gradient(
+      circle,
+      var(--glow-core) 0%,
+      var(--glow-edge) 45%,
+      transparent 72%
+    );
+    filter: blur(70px);
+    pointer-events: none;
+  }
 }

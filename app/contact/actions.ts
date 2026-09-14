@@ -14,12 +14,19 @@ const CONTACT_METHOD_LABEL: Record<string, string> = {
   either: "Either",
 };
 
+const INTEREST_LABEL: Record<string, string> = {
+  exosome: "Exosome Therapy",
+  "placental-matrix": "Placental Matrix Therapy",
+  unsure: "Not sure yet",
+};
+
 export async function sendConsultation(formData: FormData): Promise<ConsultationResult> {
   const name = String(formData.get("name") ?? "").trim();
   const email = String(formData.get("email") ?? "").trim();
   const phone = String(formData.get("phone") ?? "").trim();
   const reason = String(formData.get("reason") ?? "").trim();
   const contactMethod = String(formData.get("contactMethod") ?? "either").trim();
+  const interest = String(formData.get("interest") ?? "").trim();
 
   if (!name || !email || !reason) {
     return { ok: false, error: "Please fill out your name, email, and reason for interest." };
@@ -36,6 +43,7 @@ export async function sendConsultation(formData: FormData): Promise<Consultation
       phone,
       reason,
       contactMethod,
+      interest,
     });
     return {
       ok: false,
@@ -46,17 +54,19 @@ export async function sendConsultation(formData: FormData): Promise<Consultation
   const resend = new Resend(apiKey);
   const from = process.env.RESEND_FROM || "OSI Regenerative Medicine <onboarding@resend.dev>";
   const contactMethodLabel = CONTACT_METHOD_LABEL[contactMethod] ?? "Either";
+  const interestLabel = INTEREST_LABEL[interest] ?? "Not specified";
   const subject = `New consultation request, ${name}`;
 
   const text = [
     `New consultation request from the regenerative medicine site.`,
     ``,
-    `Name:            ${name}`,
-    `Email:           ${email}`,
-    `Phone:           ${phone || "-"}`,
+    `Name:              ${name}`,
+    `Email:             ${email}`,
+    `Phone:             ${phone || "-"}`,
+    `Interested in:     ${interestLabel}`,
     `Preferred contact: ${contactMethodLabel}`,
     ``,
-    `Reason for interest:`,
+    `What brings them in:`,
     reason,
   ].join("\n");
 

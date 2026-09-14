@@ -52,8 +52,27 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${lora.variable} ${inter.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-ivory text-ink">
+    <html lang="en" className={`${lora.variable} ${inter.variable} h-full antialiased`} suppressHydrationWarning>
+      <head>
+        {/* Applies the stored (or system) theme before first paint, so the
+            page never flashes the wrong background. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{var t=localStorage.getItem('theme');if(t!=='dark'&&t!=='light'){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}document.documentElement.dataset.theme=t}catch(e){document.documentElement.dataset.theme='light'}`,
+          }}
+        />
+        {/* Chrome (and others) restore the last scroll offset on reload by
+            default — on a page this long that lands you mid-FAQ instead of
+            at the hero. `manual` hands scroll position back to us: a plain
+            reload starts at the top, and HashScrollFix still drives the
+            #our-approach / #physicians cases explicitly. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `if('scrollRestoration' in history){history.scrollRestoration='manual'}`,
+          }}
+        />
+      </head>
+      <body className="min-h-full flex flex-col bg-canvas text-ink">
         <a href="#main-content" className="skip-link">
           Skip to content
         </a>
