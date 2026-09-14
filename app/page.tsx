@@ -65,12 +65,12 @@ export default function HomePage() {
         {/* This section deliberately doesn't use `container-wide` (1180px,
             shared by every other section) — it has its own wider cap so
             widening the hero doesn't widen the whole site. */}
-        <div className="mx-auto max-w-[1440px] px-5 md:px-10 relative z-10 pt-28 md:pt-36 pb-3 md:pb-2 grid lg:grid-cols-[1.15fr_0.85fr] gap-6 sm:gap-9 lg:gap-10 xl:gap-[14.4rem] items-center lg:justify-center">
+        <div className="mx-auto max-w-[1440px] px-5 md:px-10 relative z-10 pt-28 md:pt-36 pb-3 md:pb-2 grid lg:grid-cols-[1.15fr_0.85fr] gap-6 sm:gap-9 lg:gap-10 xl:gap-[clamp(4rem,43vw-30.75rem,14.4rem)] items-center lg:justify-center">
           {/* `min-w-0`: grid items default to `min-width: auto`, which
               refuses to shrink below the column's content size — without
               this, any wide child (even one that's visually scaled down)
               can force the whole row past the viewport on mobile. */}
-          <div className="min-w-0">
+          <div className="min-w-0 text-center lg:text-left">
             {/* Two lines exactly: "A new option, from a team" / "you already
                 trust." — `lg:whitespace-nowrap` plus the reduced clamp max
                 keep each phrase from wrapping again at this column width. */}
@@ -80,13 +80,13 @@ export default function HomePage() {
               <span className="text-sage">you already trust.</span>
             </h1>
 
-            <p className="mt-5 text-base text-ink/65 max-w-[46ch] leading-relaxed">
+            <p className="mt-5 text-base text-ink/65 max-w-[46ch] mx-auto lg:mx-0 leading-relaxed">
               We&apos;re bringing exosome and placental matrix therapy into the
               care we&apos;ve always provided — no hype, no pressure, just an
               honest conversation about whether it&apos;s right for you.
             </p>
 
-            <div className="mt-8 flex flex-wrap gap-3.5">
+            <div className="mt-8 flex flex-wrap justify-center lg:justify-start gap-3.5">
               <Link href="/contact" className="btn-primary">
                 Request a Consultation
               </Link>
@@ -103,7 +103,7 @@ export default function HomePage() {
       <section className="bg-canvas">
         <div className="container-wide pt-8 md:pt-16 pb-6 md:pb-8 max-w-7xl text-center">
           <TextReveal
-            className="text-xl md:text-2xl text-heading/80 leading-[1.6] font-display"
+            className="text-lg md:text-xl text-heading/80 leading-[1.6] font-display"
             text="For years, patients have trusted us with their orthopedic and pain care. Regenerative medicine is simply the next tool in that same relationship — something we looked into carefully before ever offering it, and something we'll only recommend if it actually makes sense for you."
           />
         </div>

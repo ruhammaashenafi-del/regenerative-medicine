@@ -50,10 +50,16 @@ export default function IsometricLayers() {
   return (
     <div
       aria-hidden
-      className="mx-auto mt-6 lg:mt-32 w-[242px] h-[242px] sm:w-[330px] sm:h-[330px] lg:w-[440px] lg:h-[440px]"
+      className="mx-auto mt-6 lg:mt-32 w-[242px] h-[242px] sm:w-[330px] sm:h-[330px] xl:w-[clamp(330px,50vw-310px,440px)] xl:h-[clamp(330px,50vw-310px,440px)]"
     >
+      {/* `.iso-scale-fluid` (globals.css) rather than an `xl:scale-[clamp(...)]`
+          arbitrary value: Tailwind reads a `/` inside a bracketed value as
+          the opacity-modifier separator, which silently broke the whole
+          utility — the `calc(Xvw / 1px - Y)` unit-stripping trick (needed to
+          turn a length into the unitless number `scale()` takes) can't
+          avoid that slash, so this one has to be a real CSS rule instead. */}
       <div
-        className="scale-[0.55] sm:scale-[0.75] lg:scale-100 origin-top-left"
+        className="scale-[0.55] sm:scale-[0.75] iso-scale-fluid origin-top-left"
         style={{ width: 440, height: 440 }}
       >
         <div className="iso-scene relative" style={{ width: 440, height: 440 }}>

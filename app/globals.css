@@ -479,3 +479,35 @@ body {
     pointer-events: none;
   }
 }
+
+/* Deliberately outside `@layer components` (and not `@layer utilities`
+   either): Tailwind's cascade-layer order (`theme, base, components,
+   utilities`) means anything in `utilities` beats `components` regardless
+   of source order or specificity — an earlier version of this rule lived
+   in `@layer components` and Tailwind's `sm:scale-[0.75]` (a utility) beat
+   it outright at every width above 640px, no matter what this said.
+   Unlayered rules sit outside that ordering entirely and beat every
+   layered rule, which is what actually lets this win.
+
+   Fluid scale for the hero graphic between the `xl` breakpoint and where
+   it hits full size — ramps 0.75 → 1 as the viewport grows from 1280px to
+   1500px, then holds at 1. A plain media query rather than a Tailwind
+   `scale-[clamp(...)]` arbitrary value: Tailwind treats a `/` inside a
+   bracketed value as the opacity-modifier separator, which broke the
+   class outright — and the `calc(Xvw / 1px - Y)` trick used here to turn a
+   length into the unitless number `scale` expects can't avoid that slash.
+   Numbers match `IsometricLayers.tsx`'s width/height clamp
+   (`clamp(330px, 50vw - 310px, 440px)`): 330/440 = 0.75, and dividing that
+   formula by 440 gives this one.
+
+   Sets the standalone `scale` property, not `transform: scale()` — those
+   are two different CSS properties that compose (multiply) rather than one
+   overriding the other, and Tailwind's `scale-*` utilities already occupy
+   `scale`. Using `transform` instead stacked on top of that 0.75 rather
+   than replacing it — 0.75 × 0.75 = 0.5625, visibly smaller than
+   intended. */
+@media (min-width: 1280px) {
+  .iso-scale-fluid {
+    scale: clamp(0.75, calc(0.1136vw / 1px - 0.7045), 1);
+  }
+}
