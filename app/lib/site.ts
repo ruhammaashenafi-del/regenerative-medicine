@@ -1,5 +1,5 @@
 export const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://osi-regen-placeholder.com"
+  process.env.NEXT_PUBLIC_SITE_URL || "https://osi-regen-placeholder.com"
 ).replace(/\/$/, "");
 
 export const SITE_NAME = "The Orthopedic & Spine Institute";
